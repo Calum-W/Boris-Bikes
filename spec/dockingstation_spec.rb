@@ -3,6 +3,18 @@ require "DockingStation.rb"
 describe DockingStation do
   subject { described_class.new }
 
+  describe 'initialization' do
+    it 'has a variable capacity' do
+      docking_station = DockingStation.new(50)
+      50.times { docking_station.dock Bike.new }
+      expect{ docking_station.dock Bike.new }.to raise_error 'Docking station full'
+    end
+
+    it 'has a default capacity' do
+      expect(DockingStation::DEFAULT_CAPACITY == subject.capacity).to eq true
+    end
+  end
+
   describe '#release_bike' do
     it 'releases a bike' do
       bike = Bike.new
@@ -20,7 +32,9 @@ describe DockingStation do
       expect(subject.dock(bike).include?(bike)).to eq true
     end
     it "raises an error when the dock is already full" do
-      expect { (DockingStation::DEFAULT_CAPACITY + 1).times{subject.dock(Bike.new)} }.to raise_error 'Docking station full'
+      docking_station = DockingStation.new(50)
+      50.times { docking_station.dock Bike.new }
+      expect{ docking_station.dock Bike.new }.to raise_error 'Docking station full'
     end
     it 'returns an array' do
       bike = Bike.new
