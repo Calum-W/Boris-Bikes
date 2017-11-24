@@ -4,7 +4,7 @@ describe DockingStation do
   subject { described_class.new }
   let(:bike) {Bike.new}
 
-  describe 'initialization' do
+  describe '#initialization' do
     it 'has a variable capacity' do
       docking_station = DockingStation.new(50)
       50.times { docking_station.dock bike }
@@ -17,14 +17,13 @@ describe DockingStation do
   end
 
   describe '#release_bike' do
-    it 'releases a bike' do
-      subject.dock(bike)
-      expect(subject.release_bike).to eq bike
+    it 'releases a working bike' do
+      subject.dock double(:working_bike, working: true)
+      bike = subject.release_bike
+      expect(bike.working).to eq true
     end
     it "doesn't release a broken bike" do
-      broken_bike = Bike.new
-      broken_bike.working = false
-      subject.dock(broken_bike)
+      subject.dock(double(:broken_bike, working: false))
       expect { subject.release_bike }.to raise_error('No bikes available')
     end
   end
@@ -35,12 +34,11 @@ describe DockingStation do
     end
     it "raises an error when the dock is already full" do
       docking_station = DockingStation.new(50)
-      50.times { docking_station.dock Bike.new }
-      expect{ docking_station.dock Bike.new }.to raise_error 'Docking station full'
+      50.times { docking_station.dock double(:bike, working: true) }
+      expect{ docking_station.dock double(:bike, working: true) }.to raise_error 'Docking station full'
     end
     it 'accepts a broken bike' do
-      broken_bike = Bike.new
-      broken_bike.working = false
+      broken_bike = double(:broken_bike, working: false)
       expect(subject.dock(broken_bike).include?(broken_bike)).to eq true
     end
 
