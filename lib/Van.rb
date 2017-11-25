@@ -1,5 +1,6 @@
 require_relative 'DockingStation'
 require_relative 'Garage'
+require_relative 'Bike'
 
 class Van
   def pick_up_broken(dockingStation, garage)
